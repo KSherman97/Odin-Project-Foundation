@@ -1,0 +1,16 @@
+#game-board {
+    background-color: gray;
+    display: flex;
+    flex-wrap: wrap;
+    width: 720px;
+    height: 720px;
+
+}
+
+.grid-item {
+    color: gray;
+    flex: 0 0 1%;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
