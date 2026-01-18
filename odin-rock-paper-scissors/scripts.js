@@ -24,13 +24,15 @@ let computerScore = 0;
 // that means we will take a fractional 3rd quantiles
 function getComputerChoice() {
     let determinate = Math.floor(Math.random() * 3) + 1;
+    
+    let roundMove = document.querySelector("#last-move");
 
     if(determinate == 1) {
-        console.log("Computer played rock\n");
+        roundMove.textContent = "Computer played rock";
     } else if(determinate == 2) {
-        console.log("Computer played paper\n");
+        roundMove.textContent = "Computer played paper";
     } else {
-        console.log("Computer played scissors\n");
+        roundMove.textContent = "Computer played scissors";
     }
 
     return determinate;
@@ -39,8 +41,6 @@ function getComputerChoice() {
 // human choice logic
 // We are done if the user enters exit
 function getHumanChoice(move) {
-    console.log(move);
-
     if(move == "rock") {
         return 1;
     } else if(move == "paper") {
@@ -54,40 +54,44 @@ function getHumanChoice(move) {
 // scissors beats paper
 // paper beats rock
 function playRound(userMove, computerMove) {
+    const playerScoreSheet = document.querySelector("#player-score");
+    const computerScoreSheet = document.querySelector("#computer-score");
+    const roundResult = document.querySelector("#round-result");
+
     if(userMove == computerMove) {
-        console.log("Tie!\n");
+        roundResult.textContent = "Round Tie!";
     } else if(userMove == 3 && computerMove == 1) {
         computerScore += 1;
-        console.log("You Lose!\n");
+        roundResult.textContent = "You Lose!";
     } else if(userMove == 1 && computerMove == 3) {
         userScore += 1;
-        console.log("You Win!\n");
+        roundResult.textContent = "You Win!";
     } else {
         if(userMove > computerMove) {
             userScore += 1;
-            console.log("You Win!\n");
+            roundResult.textContent = "You Win!";
         } else {
             computerScore += 1;
-            console.log("You Lose!\n");
+            roundResult.textContent = "You Lose!";
         }
     }
+
+    playerScoreSheet.textContent = userScore;
+    computerScoreSheet.textContent = computerScore;
 }
 
 // event listeners
 const buttonRock = document.querySelector('#button-rock');
 buttonRock.addEventListener("click", () => {
     playRound(getHumanChoice("rock"), getComputerChoice());
-    console.log("User Score: " + userScore, " Computer Score: " + computerScore + "\n");
 });
 
 const buttonPaper = document.querySelector('#button-paper');
 buttonPaper.addEventListener("click", () => {
     playRound(getHumanChoice("paper"), getComputerChoice());
-    console.log("User Score: " + userScore, " Computer Score: " + computerScore + "\n");
 });
 
 const buttonScissors = document.querySelector('#button-scissors');
 buttonScissors.addEventListener("click", () => {
     playRound(getHumanChoice("scissors"), getComputerChoice());
-    console.log("User Score: " + userScore, " Computer Score: " + computerScore + "\n");
 });
