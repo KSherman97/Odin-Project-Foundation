@@ -73,16 +73,21 @@ function playRound(userMove, computerMove) {
     }
 }
 
-function playGame() { 
-    for(let i = 0; i < 5; i++) {
-        let userInput = prompt("Enter a move: ");
+// event listeners
+const buttonRock = document.querySelector('#button-rock');
+buttonRock.addEventListener("click", () => {
+    playRound(getHumanChoice("rock"), getComputerChoice());
+    console.log("User Score: " + userScore, " Computer Score: " + computerScore + "\n");
+});
 
-        let humanSelection = getHumanChoice(userInput);
-        let computerSelection = getComputerChoice();
+const buttonPaper = document.querySelector('#button-paper');
+buttonPaper.addEventListener("click", () => {
+    playRound(getHumanChoice("paper"), getComputerChoice());
+    console.log("User Score: " + userScore, " Computer Score: " + computerScore + "\n");
+});
 
-        playRound(humanSelection, computerSelection);
-        console.log("User Score: " + userScore, " Computer Score: " + computerScore + "\n");
-    }
-}
-
-playGame();
+const buttonScissors = document.querySelector('#button-scissors');
+buttonScissors.addEventListener("click", () => {
+    playRound(getHumanChoice("scissors"), getComputerChoice());
+    console.log("User Score: " + userScore, " Computer Score: " + computerScore + "\n");
+});
