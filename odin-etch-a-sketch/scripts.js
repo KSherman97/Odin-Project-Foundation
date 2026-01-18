@@ -26,6 +26,8 @@ function generateBoard(){
     let currentX = 1;
     let currentY = 1;
 
+    let isHovering = false; // state tracker
+
     for(let y = currentY; y <= rows; y++) {
         for(let x = currentX; x <= cols; x++) {
             let pixel = document.createElement('div');
@@ -33,8 +35,10 @@ function generateBoard(){
             // pixel.textContent = x + " " + y;
 
             pixel.addEventListener('mouseenter', () => {
-                pixel.style.cssText = "background-color: black;";
-            });
+                if(event.buttons === 1) {
+                    pixel.style.cssText = "background-color: black;";
+                }
+            });            
 
             boardContainer.appendChild(pixel);
         }
