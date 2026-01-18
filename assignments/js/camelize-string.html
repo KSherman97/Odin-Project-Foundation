@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <link rel="stylesheet" type="text/css" />
+  <title>Document</title>
+</head>
+<body>
+  <header>
+  </header>
+  <main>
+  </main>
+  <footer>
+  </footer>
+  <script>
+    /**
+     * @author: Kyle Sherman
+     * @date: 01/17/2026
+     * @description:
+     * write a function that changes dash-separated words into camel case:
+     * camelize("background-color") == 'backgroundColor';
+     * camelize("list-style-image") == 'listStyleImage';
+     * camelize("-webkit-transition") == 'WebkitTransition';
+    */
+    
+     function camelize(string) {
+        let stringArray = string.split("-")
+
+        const mappedArray = stringArray.map((x) => {
+            return x.charAt(0).toUpperCase() + x.slice(1);
+        });
+
+        const finalArray = mappedArray.join("");
+        return finalArray;
+    }
+
+    console.log(camelize("background-color"));
+    console.log(camelize("list-style-image"));
+    console.log(camelize("-webkit-transition"));
+  </script>
+</body>
+</html>
