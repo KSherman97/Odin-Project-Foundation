@@ -61,10 +61,6 @@ function createOpperand(operand) {
 function solve() {
     rollingCalculation = Number(pendingCalculationArray[0]);
 
-    for(let i = 0; i < pendingCalculationArray.length; i++) {
-        console.log(pendingCalculationArray[i]);
-    }
-
     for(let i = 1; i < pendingCalculationArray.length; i+= 2) {
         const operator = pendingCalculationArray[i];
         const value = Number(pendingCalculationArray[i + 1]);
@@ -138,12 +134,19 @@ function handleBackspace() {
 
 function handleOperands(operand) {
     if(["+", "-", "*", "/", "="].includes(operand)) {
+        if(operand === "-" && freshScreenState && !lastActionWasEquals) {
+            if(!screen.textContent.startsWith("-")) {
+                updateScreen("-", true);
+                freshScreenState = false;
+            }
+            return;
+        }
+
         if(freshScreenState && !lastActionWasEquals) {
             return;
         }
 
         createOpperand(operand);
-
         freshScreenState = true;
     }
 }
@@ -152,7 +155,6 @@ function handleNumbers(number) {
     if(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(number)){
         if(freshScreenState || lastActionWasEquals) {
             // start fresh if screen is fresh or last action was =
-
             if(lastActionWasEquals) {
                 pendingCalculationArray.splice(0, pendingCalculationArray.length);
             }
