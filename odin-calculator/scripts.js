@@ -5,6 +5,7 @@ const screen = document.querySelector(".screen");
 const buttonClear = document.querySelector("#button-cls");
 const buttonDec = document.querySelector("#button-dec");
 const buttonCalc = document.querySelector("#button-calc");
+const buttonBack = document.querySelector("#button-bs");
 
 // operand buttons
 const buttonAdd = document.querySelector("#button-add");
@@ -58,7 +59,7 @@ function createOpperand(operand) {
 }
 
 function solve() {
-    let rollingCalculation = Number(pendingCalculationArray[0]);
+    rollingCalculation = Number(pendingCalculationArray[0]);
 
     for(let i = 0; i < pendingCalculationArray.length; i++) {
         console.log(pendingCalculationArray[i]);
@@ -78,11 +79,11 @@ function solve() {
             rollingCalculation /= value;
         }
     }
-    pendingCalculationArray.splice(0, pendingCalculationArray.length);
-    pendingCalculationArray.push(Number(rollingCalculation));
-    lastActionWasEquals = true;
 
     rollingCalculation = roundToThree(rollingCalculation);
+    pendingCalculationArray.splice(0, pendingCalculationArray.length);
+    pendingCalculationArray.push(rollingCalculation);
+    lastActionWasEquals = true;
 
     updateScreen(rollingCalculation, true);
 }
@@ -98,149 +99,152 @@ function updateScreen(valueString, clearScreenBool) {
     }
 }
 
+/**
+ * Handlers for the event listeners
+ * This is necessary for a separation of concerns
+ */
+
+function handleDecimal() {
+    if(screen.textContent.includes(".")) {
+        return;
+    }
+
+   if(freshScreenState === true) {
+        freshScreenState = false;
+        updateScreen(".", true);
+    } else {
+        updateScreen(".", false);
+    }
+}
+
+function handleBackspace() {
+    if(lastActionWasEquals) {
+        return;
+    }
+
+    if(freshScreenState) {
+        updateScreen("0", true);
+    } else {
+        let current = screen.textContent;
+        if(current.length <= 1) {
+            // if there is one char left, then reset screen to zero
+            updateScreen("0", true);
+            freshScreenState = true;
+        } else {
+            screen.textContent = current.slice(0, -1);
+        }
+    }
+}
+
+function handleOperands(operand) {
+    if(["+", "-", "*", "/", "="].includes(operand)) {
+        if(freshScreenState && !lastActionWasEquals) {
+            return;
+        }
+
+        createOpperand(operand);
+
+        freshScreenState = true;
+    }
+}
+
+function handleNumbers(number) {
+    if(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(number)){
+        if(freshScreenState || lastActionWasEquals) {
+            // start fresh if screen is fresh or last action was =
+
+            if(lastActionWasEquals) {
+                pendingCalculationArray.splice(0, pendingCalculationArray.length);
+            }
+
+            freshScreenState = false;
+            lastActionWasEquals = false;
+            updateScreen(number, true);
+        } else {
+            updateScreen(number, false);
+        }
+    }
+}
+
 function createEventListeners() {
+    /**
+     * Button Click Event Listeners
+     */
+    
     // clear button
     buttonClear.addEventListener('click', () => {
         freshScreenState = true;
         rollingCalculation = 0.0;
         pendingCalculationArray.splice(0, pendingCalculationArray.length);
-        updateScreen("0.00", true);
+        updateScreen("0", true);
     });
 
-    // calculate button
-    buttonCalc.addEventListener('click', () => {
-        createOpperand("=");
-    });
-    
-    // decimal button
-    buttonDec.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen(".", true);
-        } else {
-            updateScreen(".", false);
+    buttonBack.addEventListener('click', () => handleBackspace());
+
+    // operands
+    buttonDec.addEventListener('click', () => handleDecimal());
+    buttonCalc.addEventListener('click', () => handleOperands("="));
+    buttonAdd.addEventListener('click', () => handleOperands("+"));
+    buttonSub.addEventListener('click', () => handleOperands("-"));
+    buttonMul.addEventListener('click', () => handleOperands("*"));
+    buttonDiv.addEventListener('click', () => handleOperands("/"));
+
+    // values
+    button0.addEventListener('click', () => handleNumbers("0"));
+    button1.addEventListener('click', () => handleNumbers("1"));
+    button2.addEventListener('click', () => handleNumbers("2"));
+    button3.addEventListener('click', () => handleNumbers("3"));
+    button4.addEventListener('click', () => handleNumbers("4"));
+    button5.addEventListener('click', () => handleNumbers("5"));
+    button6.addEventListener('click', () => handleNumbers("6"));
+    button7.addEventListener('click', () => handleNumbers("7"));
+    button8.addEventListener('click', () => handleNumbers("8"));
+    button9.addEventListener('click', () => handleNumbers("9"));
+
+    /**
+     * Keyboard Press Event Listeners
+     */
+    document.addEventListener('keydown', (event) => {
+        if (["+", "-", "*", "/", ".", "Enter"].includes(event.key)) {
+            event.preventDefault();
         }
-    });
 
-    // 0 button
-    button0.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("0", true);
-        } else {
-            updateScreen("0", false);
+        if(event.key === '.') {
+            handleDecimal();
+        } else if(event.key === '+') {
+            handleOperands("+");
+        } else if(event.key === "-") {
+            handleOperands("-");
+        } else if(event.key === "*") {
+            handleOperands("*");
+        } else if(event.key === "/") {
+            handleOperands("/");
+        } else if(event.key === "0") {
+            handleNumbers("0");
+        } else if(event.key === "1") {
+            handleNumbers("1");
+        } else if(event.key === "2") {
+            handleNumbers("2");
+        } else if(event.key === "3") {
+            handleNumbers("3");
+        } else if(event.key === "4") {
+            handleNumbers("4");
+        } else if(event.key === "5") {
+            handleNumbers("5");
+        } else if(event.key === "6") {
+            handleNumbers("6");
+        } else if(event.key === "7") {
+            handleNumbers("7");
+        } else if(event.key === "8") {
+            handleNumbers("8");
+        } else if(event.key === "9") {
+            handleNumbers("9");
+        } else if(event.key === "Enter") {
+            handleOperands("=");
+        } else if(event.key === "Backspace") {
+            event.preventDefault();
+            handleBackspace();
         }
-    });
-
-    // 1 button
-    button1.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("1", true);
-        } else {
-            updateScreen("1", false);
-        }
-    });
-
-    // 2 button
-    button2.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("2", true);
-        } else {
-            updateScreen("2", false);
-        }
-    });
-
-    // 3 button
-    button3.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("3", true);
-        } else {
-            updateScreen("3", false);
-        }
-    });
-
-    // 4 button
-    button4.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("4", true);
-        } else {
-            updateScreen("4", false);
-        }
-    });
-    
-    // 5 button
-    button5.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("5", true);
-        } else {
-            updateScreen("5", false);
-        }
-    });
-
-    // 6 button
-    button6.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("6", true);
-        } else {
-            updateScreen("6", false);
-        }
-    });
-
-    // 7 button
-    button7.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("7", true);
-        } else {
-            updateScreen("7", false);
-        }
-    });
-
-    // 8 button
-    button8.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("8", true);
-        } else {
-            updateScreen("8", false);
-        }
-    });
-
-    // 9 button
-    button9.addEventListener('click', () => {
-        if(freshScreenState === true) {
-            freshScreenState = false;
-            updateScreen("9", true);
-        } else {
-            updateScreen("9", false);
-        }
-    });
-
-    // math buttons
-    // + button
-    buttonAdd.addEventListener('click', () => {
-        createOpperand("+");
-    });
-
-    // - button
-    buttonSub.addEventListener('click', () => {
-        createOpperand("-");
-    });
-
-    // * button
-    buttonMul.addEventListener('click', () => {
-        createOpperand("*");
-    });
-
-    // / button
-    buttonDiv.addEventListener('click', () => {
-        createOpperand("/");
     });
 }
 
