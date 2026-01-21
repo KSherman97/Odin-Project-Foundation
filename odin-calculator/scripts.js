@@ -1,5 +1,6 @@
 // objects related to output
 const screen = document.querySelector(".screen");
+const history = document.querySelector(".history")
 
 // function buttons
 const buttonClear = document.querySelector("#button-cls");
@@ -36,25 +37,43 @@ function roundToThree(number) {
 }
 
 function createOpperand(operand) {
+
     if(operand === "=") {
         if(pendingCalculationArray.length < 2) {
             return;
         }
 
         pendingCalculationArray.push(Number(screen.textContent))
+        updateHistory(` ${screen.textContent} = `, true);
+        
         solve();
         return;
     }
     
     if(["+", "-", "*", "/"].includes(operand)) {
-        if(!lastActionWasEquals) {
-            pendingCalculationArray.push(Number(screen.textContent));
+        const currentNumber = Number(screen.textContent);
+        
+        if(lastActionWasEquals) {
+            pendingCalculationArray.splice(0, pendingCalculationArray.length); // clear old expression
+            pendingCalculationArray.push(currentNumber);
+            updateHistory(`${currentNumber} ${operand} `, true);
+        } else {
+            pendingCalculationArray.push(currentNumber);
+            updateHistory(`${currentNumber} ${operand} `, true);
         }
 
         pendingCalculationArray.push(operand);
         lastActionWasEquals = false;
-
+        freshScreenState = true;
         updateScreen("", true);
+    }
+}
+
+function updateHistory(valueString, append = true) {
+    if(append) {
+        history.textContent += valueString;
+    } else {
+        history.textContent = valueString;
     }
 }
 
@@ -157,6 +176,7 @@ function handleNumbers(number) {
             // start fresh if screen is fresh or last action was =
             if(lastActionWasEquals) {
                 pendingCalculationArray.splice(0, pendingCalculationArray.length);
+                updateHistory("", false);
             }
 
             freshScreenState = false;
@@ -179,6 +199,7 @@ function createEventListeners() {
         rollingCalculation = 0.0;
         pendingCalculationArray.splice(0, pendingCalculationArray.length);
         updateScreen("0", true);
+        updateHistory("", false);
     });
 
     buttonBack.addEventListener('click', () => handleBackspace());

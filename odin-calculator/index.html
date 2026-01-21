@@ -18,34 +18,38 @@
     <div class="calculator">
         <h1>Calculator Project</h1>
         <!-- Header where text is displayed -->
+        <div class="calculator-history">
+          <div class="history"></div>
+        </div>
+
         <div class="calculator-screen">
-            <div class="screen">0</div>
+          <div class="screen">0</div>
         </div>
 
         <!-- Grid of buttons -->
         <div class="calculator-input">
-            <button id="button-cls">clear</button>
-            <button id="button-bs"><</button>
-            <button id="button-add">+</button>
-            <button id="button-sub">-</button>
+            <button id="button-cls" class="function">clear</button>
+            <button id="button-bs" class="function"><</button>
+            <button id="button-add" class="operator">+</button>
+            <button id="button-sub" class="operator">-</button>
 
             <button id="button-7">7</button>
             <button id="button-8">8</button>
             <button id="button-9">9</button>
-            <button id="button-mul">*</button>
+            <button id="button-mul" class="operator">*</button>
 
             <button id="button-4">4</button>
             <button id="button-5">5</button>
             <button id="button-6">6</button>
-            <button id="button-div">/</button>
+            <button id="button-div" class="operator">/</button>
 
             <button id="button-1">1</button>
             <button id="button-2">2</button>
             <button id="button-3">3</button>
-            <button id="button-calc" class="span-2-high">=</button>
+            <button id="button-calc" class="span-2-high" class="function">=</button>
 
             <button id="button-0" class="span-2">0</button>
-            <button id="button-dec">.</button>
+            <button id="button-dec" class="function">.</button>
         </div>
     </div>
   </main>
